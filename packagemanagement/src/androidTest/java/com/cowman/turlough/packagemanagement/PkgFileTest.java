@@ -37,19 +37,23 @@ public class PkgFileTest extends ApplicationTestCase<Application> {
     public void testLoadFiles() throws IOException {
         helper.touchFiles(extracted, "1234", "config.xml");
         File dir = new File(extracted, "1234");
-        PkgFile file = register.getConfig();
-        file.loadFiles(dir);
+        PkgFile pf = register.getConfig();
 
-        assertEquals(1, file.getFiles().size());
+        for(File file : dir.listFiles())
+            pf.loadFile(file);
+
+        assertEquals("config.xml", pf.getFile().getName());
     }
 
     public void testDoesntLoadInvalidFiles() throws IOException {
-        helper.touchFiles(extracted, "1234", "config.xml", "ignore", "zippyzippyzingzing");
+        helper.touchFiles(extracted, "1234", "ignore", "config.xml", "zippyzippyzingzing");
         File dir = new File(extracted, "1234");
-        PkgFile file = register.getConfig();
-        file.loadFiles(dir);
+        PkgFile pf = register.getConfig();
 
-        assertEquals(1, file.getFiles().size());
+        for(File file : dir.listFiles())
+            pf.loadFile(file);
+
+        assertEquals("config.xml", pf.getFile().getName());
     }
 
     public void testFilter(){

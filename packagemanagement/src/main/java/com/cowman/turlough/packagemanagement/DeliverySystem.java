@@ -2,6 +2,7 @@ package com.cowman.turlough.packagemanagement;
 
 import android.content.Context;
 
+import com.cowman.turlough.packagemanagement.exception.PackageException;
 import com.cowman.turlough.packagemanagement.pojo.FileType;
 import com.cowman.turlough.packagemanagement.pojo.PkgFile;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
+import rx.Observable;
 
 /**
  * Created by turlough on 13/02/16.
@@ -40,30 +42,26 @@ public class DeliverySystem  {
         }
     }
 
-    public void createPackage(File dir, PkgFile... pkgFiles) {
-
+    public int createPackage(String pkgId, PkgFile... pkgFiles) {
+        File dir = new File(system.getIncoming(), pkgId);
+        dir.mkdirs();
+        List<PkgFile> result = new ArrayList<>();
+        Observable
+                .from(pkgFiles)
+                .filter(pf -> pf.hasFile())
+                .subscribe(pf -> result.add(pf));
+        return result.size();
     }
 
-    public PkgFile createPkgFile(File dir, FileFilter filter, FileType fileType, String name, Date date, String md5) throws IOException {
-        return new PkgFile() {{
-            setFilter(filter);
-            setFileType(fileType);
-            setLastModified(date);
-            setMd5(md5);
-            new File(dir, name).createNewFile();
-        }};
-    }
+    public void putInDefaultDir(PkgFile pkgFile, String name) throws IOException, PackageException {
 
-
-    public void putInDefaultDir(PkgFile pkgFile, String name) throws IOException {
         File file = new File(defaultDir, name);
+        if(! pkgFile.getFilter().accept(file))
+            return;
+
         file.createNewFile();
+        pkgFile.setFile(file);
         pkgFile.setLastModified(new Date(file.lastModified()));
-
-        List<File> fileSet = new ArrayList<>();
-        fileSet.add(file);
-        pkgFile.setFiles(fileSet);
-
         pkgFile.setMd5("md5");
     }
 

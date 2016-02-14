@@ -3,6 +3,7 @@ package com.cowman.turlough.packagemanagement;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
+import com.cowman.turlough.packagemanagement.exception.PackageException;
 import com.cowman.turlough.packagemanagement.pojo.FileType;
 import com.cowman.turlough.packagemanagement.pojo.PkgFile;
 
@@ -49,28 +50,28 @@ public class PkgControllerTest extends ApplicationTestCase<Application> {
 
         List<PkgFile> result = controller.fromDirectory(dir);
         assertEquals(1, result.size());
-        assertEquals(1, result.get(0).getFiles().size());
+
     }
 
-    public void testCreateHotUpdates() throws IOException {
+    public void testCreateHotUpdates() throws IOException, PackageException {
         PkgFile p1 = register.getHotUpdate();
         helper.setDir(runtime, "1234");
         helper.putInDefaultDir(p1, "hu-1.dat");
         assertTrue(new File(helper.getDefaultDir(), "hu-1.dat").exists());
     }
 
-    public void testLoadFromDir() throws IOException {
+    public void testLoadFromDir() throws IOException, PackageException {
         PkgFile p1 = register.getHotUpdate();
         helper.setDir(runtime, "1234");
         helper.putInDefaultDir(p1, "hu-1.dat");
         List<PkgFile> pkgFiles = controller.fromDirectory(helper.getDefaultDir());
 
         assertEquals(1, pkgFiles.size());
-        assertEquals(1, pkgFiles.get(0).getFiles().size());
-        assertEquals("hu-1.dat", pkgFiles.get(0).getFiles().get(0).getName());
+
+        assertEquals("hu-1.dat", pkgFiles.get(0).getFile().getName());
     }
 
-    public void testLoadHotUpdateFromDir() throws IOException {
+    public void testLoadHotUpdateFromDir() throws IOException, PackageException {
         PkgFile p1 = register.getHotUpdate();
         helper.setDir(runtime, "1234");
         helper.putInDefaultDir(p1, "hu-1.dat");
@@ -78,8 +79,24 @@ public class PkgControllerTest extends ApplicationTestCase<Application> {
         List<PkgFile> pkgFiles = controller.fromDirectory(helper.getDefaultDir(), FileType.HOTUPDATE);
 
         assertEquals(1, pkgFiles.size());
-        assertEquals(1, pkgFiles.get(0).getFiles().size());
-        assertEquals("hu-1.dat", pkgFiles.get(0).getFiles().get(0).getName());
+        assertEquals("hu-1.dat", pkgFiles.get(0).getFile().getName());
+    }
+
+    public void testPackageExtraction() throws IOException, PackageException {
+
+            helper.setDir(system.getIncoming(), "1234.zip");
+
+            PkgFile svg1 = register.getSvg();
+            helper.putInDefaultDir(svg1, "header.svg");
+            PkgFile svg2 = register.getSvg();
+            helper.putInDefaultDir(svg2, "footer.svg");
+            PkgFile dot = register.getSvg();
+            helper.putInDefaultDir(dot, "dot.dot");
+
+            int count = helper.createPackage("1234.zip", svg1, svg2, dot);
+            assertEquals(3, count);
+
+
     }
 
     public void testFileList() throws IOException {

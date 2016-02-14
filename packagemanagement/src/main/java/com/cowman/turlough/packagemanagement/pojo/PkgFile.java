@@ -4,10 +4,7 @@ import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileProcessor;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,22 +14,38 @@ import lombok.Setter;
  */
 public class PkgFile {
 
-    @Getter @Setter private FileFilter filter;
-    @Getter @Setter private List<File> files = new ArrayList<>();
-    @Getter @Setter private Date lastModified;
-    @Getter @Setter private String md5;
-    @Getter @Setter private FileType fileType;
-    @Getter @Setter private PkgFileProcessor processor;
+    @Getter
+    @Setter
+    private FileFilter filter;
+    @Getter
+    @Setter
+    private File file;
+    @Getter
+    @Setter
+    private Date lastModified;
+    @Getter
+    @Setter
+    private String md5;
+    @Getter
+    @Setter
+    private FileType fileType;
+    @Getter
+    @Setter
+    private PkgFileProcessor processor;
 
 
-    public boolean loadFiles(File dir){
-        File[] list = dir.listFiles(filter);
-        files = new ArrayList(Arrays.asList(list));
-        return files.size()>0;
+    public boolean loadFile(File file) {
+
+        if (filter.accept(file)) {
+            setFile(file);
+            return true;
+        }
+        return false;
+
     }
 
-    public boolean hasFiles(){
-        return ! files.isEmpty();
+    public boolean hasFile() {
+        return file != null;
     }
 
 }

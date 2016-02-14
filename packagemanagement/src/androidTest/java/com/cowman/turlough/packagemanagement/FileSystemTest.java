@@ -3,8 +3,6 @@ package com.cowman.turlough.packagemanagement;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileRegister;
-
 import java.io.File;
 import java.io.IOException;
 
