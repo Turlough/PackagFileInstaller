@@ -8,7 +8,10 @@ import com.cowman.turlough.packagemanagement.pojo.PkgFile;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,6 +63,7 @@ public class DeliverySystem  {
             return;
 
         file.createNewFile();
+        write(file, "Franco ha muerto, VIVA!");
         pkgFile.setFile(file);
         pkgFile.setLastModified(new Date(file.lastModified()));
         pkgFile.setMd5("md5");
@@ -68,5 +72,14 @@ public class DeliverySystem  {
     public void setDir(File root, String pkgId){
         defaultDir = new File(root, pkgId);
         defaultDir.mkdirs();
+    }
+
+    public void write(File file, String content) throws IOException {
+        FileOutputStream stream = new FileOutputStream(file);
+        try {
+            stream.write(content.getBytes());
+        } finally {
+            stream.close();
+        }
     }
 }

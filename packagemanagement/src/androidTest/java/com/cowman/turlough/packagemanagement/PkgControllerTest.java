@@ -40,13 +40,13 @@ public class PkgControllerTest extends ApplicationTestCase<Application> {
         register = new PkgFileRegister();
     }
 
-    public void tearDown(){
+    public void tearDown() {
         system.delete(system.getRoot());
     }
 
     public void testFromDirectory() throws IOException {
         helper.touchFiles(extracted, "1234", "not me", "config.xml");
-        File dir = new File(extracted,"1234");
+        File dir = new File(extracted, "1234");
 
         List<PkgFile> result = controller.fromDirectory(dir);
         assertEquals(1, result.size());
@@ -84,38 +84,41 @@ public class PkgControllerTest extends ApplicationTestCase<Application> {
 
     public void testPackageExtraction() throws IOException, PackageException {
 
-            helper.setDir(system.getIncoming(), "1234.zip");
+        helper.setDir(system.getIncoming(), "1234.zip");
 
-            PkgFile svg1 = register.getSvg();
-            helper.putInDefaultDir(svg1, "header.svg");
-            PkgFile svg2 = register.getSvg();
-            helper.putInDefaultDir(svg2, "footer.svg");
-            PkgFile dot = register.getSvg();
-            helper.putInDefaultDir(dot, "dot.dot");
+        PkgFile svg1 = register.getSvg();
+        helper.putInDefaultDir(svg1, "header.svg");
+        PkgFile svg2 = register.getSvg();
+        helper.putInDefaultDir(svg2, "footer.svg");
+        PkgFile dot = register.getSvg();
+        helper.putInDefaultDir(dot, "dot.dot");
 
-            int count = helper.createPackage("1234.zip", svg1, svg2, dot);
-            assertEquals(3, count);
+        int count = helper.createPackage("1234.zip", svg1, svg2, dot);
+        assertEquals("Expected 3 files in incoming zip",3, count);
 
+        controller.extractIncoming(getContext());
+        count = system.getExtracted().list().length;
+        assertEquals("Expected 2 files in extracted directory", 2, count);
 
     }
 
     public void testFileList() throws IOException {
         helper.touchFiles(extracted, "1234", "not me", "config.xml");
-        File dir = new File(extracted,"1234");
+        File dir = new File(extracted, "1234");
         assertEquals(2, dir.list().length);
     }
 
     public void testConfigFilter() throws IOException {
         PkgFileRegister register = new PkgFileRegister();
         FileFilter filter = register.getConfig().getFilter();
-        assertTrue(filter.accept(new File(extracted,"config.xml")));
+        assertTrue(filter.accept(new File(extracted, "config.xml")));
         assertFalse(filter.accept(new File(extracted, "ftm.xml")));
     }
 
     public void testListFilesWithConfigFilter() throws IOException {
         PkgFileRegister register = new PkgFileRegister();
         helper.touchFiles(extracted, "1234", "not me", "config.xml");
-        File dir = new File(extracted,"1234");
+        File dir = new File(extracted, "1234");
         FileFilter filter = register.getConfig().getFilter();
 
         File[] files = dir.listFiles(filter);
@@ -127,37 +130,37 @@ public class PkgControllerTest extends ApplicationTestCase<Application> {
         assertNotNull(controller.checkForPackages(extracted));
     }
 
-    public void testGetAllFilters(){
+    public void testGetAllFilters() {
         //if it fails, check if you added or removed a PkgFile definition
         assertEquals(8, controller.filters().size());
     }
 
-    public void testGetHotupdateFilter(){
+    public void testGetHotupdateFilter() {
         //if it fails, check if you added or removed a PkgFile definition
         assertEquals(1, controller.filters(FileType.HOTUPDATE).size());
     }
 
-    public void testGetConfigFilter(){
+    public void testGetConfigFilter() {
         //if it fails, check if you added or removed a PkgFile definition
         assertEquals(2, controller.filters(FileType.CONFIG).size());
     }
 
-    public void testGetCardReaderFilter(){
+    public void testGetCardReaderFilter() {
         //if it fails, check if you added or removed a PkgFile definition
         assertEquals(2, controller.filters(FileType.CARDREADER).size());
     }
 
-    public void testGetApkFilter(){
+    public void testGetApkFilter() {
         //if it fails, check if you added or removed a PkgFile definition
         assertEquals(1, controller.filters(FileType.APK).size());
     }
 
-    public void testGetSystemFilter(){
+    public void testGetSystemFilter() {
         //if it fails, check if you added or removed a PkgFile definition
         assertEquals(1, controller.filters(FileType.SYSTEM).size());
     }
 
-    public void testGetSvgFilter(){
+    public void testGetSvgFilter() {
         //if it fails, check if you added or removed a PkgFile definition
         assertEquals(1, controller.filters(FileType.SVG).size());
     }

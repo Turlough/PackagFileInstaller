@@ -62,7 +62,7 @@ public class FileSystem {
 
     }
 
-    public void moveFile(File sourceFile, File destDir) throws IOException {
+    public void copy(File sourceFile, File destDir) throws IOException {
 
         InputStream in = new FileInputStream(sourceFile);
         OutputStream out = new FileOutputStream(new File(destDir, sourceFile.getName()));
@@ -76,8 +76,6 @@ public class FileSystem {
         in.close();
         out.flush();
         out.close();
-
-        sourceFile.delete();
     }
 
 }

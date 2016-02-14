@@ -79,7 +79,7 @@ public class PkgFileRegister {
         svg = new PkgFile(){{
             setFileType(FileType.SVG);
             setFilter((file) -> file.getName().toLowerCase().endsWith(".svg"));
-            setProcessor((file) -> system.moveFile(file, system.getRuntime()));
+            setProcessor((file) -> system.copy(file, system.getRuntime()));
         }};
         definitions.add(svg);
     }

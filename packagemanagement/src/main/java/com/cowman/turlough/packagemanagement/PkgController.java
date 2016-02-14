@@ -3,7 +3,6 @@ package com.cowman.turlough.packagemanagement;
 import android.content.Context;
 
 import com.cowman.turlough.packagemanagement.pojo.FileType;
-import com.cowman.turlough.packagemanagement.pojo.PkgDir;
 import com.cowman.turlough.packagemanagement.pojo.PkgFile;
 
 import java.io.File;
@@ -21,9 +20,7 @@ import rx.Observable;
  */
 public class PkgController {
     private static PkgController ourInstance = new PkgController();
-    private PkgDir incomingPackage;
-    private Context context;
-    FileSystem system = new FileSystem();
+
     private PkgFileRegister register = new PkgFileRegister();
 
     public static PkgController getInstance() {
@@ -111,26 +108,23 @@ public class PkgController {
     }
 
 
-    public void extractIncoming() {
+    public void extractIncoming(Context context) throws IOException {
+
+        FileSystem system = new FileSystem();
+        system.init(context);
         File[] dirs = system.getIncoming().listFiles();
-        //create list of packageFiles from directory
+
+        //take first directory
         List<PkgFile> pkgFiles = new ArrayList<>();
         Observable
                 .from(dirs)
                 .filter(d -> d.isDirectory())
                 .take(1)
-                .subscribe(d -> pkgFiles.addAll(fromDirectory(d)) );
+                .subscribe(pkgDir -> pkgFiles.addAll(fromDirectory(pkgDir)) );
 
         for(PkgFile pf : pkgFiles){
-            Observable.from(pf.getFile())
-                    .subscribe(f ->
-                    {
-                        try {
-                            system.moveFile(f, system.getExtracted());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            system.copy(pf.getFile(), system.getExtracted());
+
         }
     }
 }
