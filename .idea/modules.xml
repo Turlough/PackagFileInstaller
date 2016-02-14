@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/InstrumentTests/InstrumentTests.iml" filepath="$PROJECT_DIR$/InstrumentTests/InstrumentTests.iml" />
       <module fileurl="file://$PROJECT_DIR$/PackageController.iml" filepath="$PROJECT_DIR$/PackageController.iml" />
       <module fileurl="file://$PROJECT_DIR$/packagemanagement/packagemanagement.iml" filepath="$PROJECT_DIR$/packagemanagement/packagemanagement.iml" />
     </modules>

@@ -1,4 +1,4 @@
-package com.cowman.turlough.packagemanagement;
+package com.cowman.turlough.packagemanagement.pojo;
 
 import lombok.Getter;
 import lombok.Setter;

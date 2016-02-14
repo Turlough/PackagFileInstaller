@@ -3,12 +3,13 @@ package com.cowman.turlough.packagemanagement;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileRegister;
+import com.cowman.turlough.packagemanagement.pojo.FileType;
+import com.cowman.turlough.packagemanagement.pojo.PkgFile;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by turlough on 13/02/16.
@@ -46,24 +47,39 @@ public class PkgControllerTest extends ApplicationTestCase<Application> {
         helper.touchFiles(extracted, "1234", "not me", "config.xml");
         File dir = new File(extracted,"1234");
 
-        Set<PkgFile> result = controller.fromDirectory(dir);
+        List<PkgFile> result = controller.fromDirectory(dir);
         assertEquals(1, result.size());
+        assertEquals(1, result.get(0).getFiles().size());
     }
 
     public void testCreateHotUpdates() throws IOException {
         PkgFile p1 = register.getHotUpdate();
         helper.setDir(runtime, "1234");
-        helper.putInDefaultDir( p1, "hu-1.dat");
+        helper.putInDefaultDir(p1, "hu-1.dat");
         assertTrue(new File(helper.getDefaultDir(), "hu-1.dat").exists());
     }
 
-    public void testLoadHotUpdates() throws IOException {
+    public void testLoadFromDir() throws IOException {
         PkgFile p1 = register.getHotUpdate();
         helper.setDir(runtime, "1234");
         helper.putInDefaultDir(p1, "hu-1.dat");
-        Set<PkgFile> files = controller.fromDirectory(helper.getDefaultDir());
+        List<PkgFile> pkgFiles = controller.fromDirectory(helper.getDefaultDir());
 
-        assertEquals(1, files.size());
+        assertEquals(1, pkgFiles.size());
+        assertEquals(1, pkgFiles.get(0).getFiles().size());
+        assertEquals("hu-1.dat", pkgFiles.get(0).getFiles().get(0).getName());
+    }
+
+    public void testLoadHotUpdateFromDir() throws IOException {
+        PkgFile p1 = register.getHotUpdate();
+        helper.setDir(runtime, "1234");
+        helper.putInDefaultDir(p1, "hu-1.dat");
+        helper.putInDefaultDir(p1, "dot.dot");
+        List<PkgFile> pkgFiles = controller.fromDirectory(helper.getDefaultDir(), FileType.HOTUPDATE);
+
+        assertEquals(1, pkgFiles.size());
+        assertEquals(1, pkgFiles.get(0).getFiles().size());
+        assertEquals("hu-1.dat", pkgFiles.get(0).getFiles().get(0).getName());
     }
 
     public void testFileList() throws IOException {

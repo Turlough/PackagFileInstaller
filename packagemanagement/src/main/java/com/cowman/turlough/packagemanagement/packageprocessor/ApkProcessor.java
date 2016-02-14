@@ -2,7 +2,7 @@ package com.cowman.turlough.packagemanagement.packageprocessor;
 
 import android.util.Log;
 
-import com.cowman.turlough.packagemanagement.ProcessingException;
+import com.cowman.turlough.packagemanagement.exception.ProcessingException;
 
 import java.io.File;
 import java.io.IOException;

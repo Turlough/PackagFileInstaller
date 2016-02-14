@@ -1,15 +1,18 @@
-package com.cowman.turlough.packagemanagement.packageprocessor;
+package com.cowman.turlough.packagemanagement;
 
 import android.util.Log;
 
-import com.cowman.turlough.packagemanagement.FileSystem;
-import com.cowman.turlough.packagemanagement.FileType;
-import com.cowman.turlough.packagemanagement.PkgFile;
+import com.cowman.turlough.packagemanagement.packageprocessor.ApkProcessor;
+import com.cowman.turlough.packagemanagement.pojo.FileType;
+import com.cowman.turlough.packagemanagement.pojo.PkgFile;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import lombok.Getter;
+import rx.Observable;
 
 /**
  * Created by turlough on 13/02/16.
@@ -105,6 +108,17 @@ public class PkgFileRegister {
             setProcessor(file -> Log.d(TAG, file.getName() + " is not implemented"));
         }};
         definitions.add(reader1);
+    }
+
+    public List<PkgFile> subset(FileType type){
+        Set<PkgFile> all = getDefinitions();
+        List<PkgFile> result = new ArrayList<>();
+
+        Observable
+                .from(all)
+                .filter(f -> f.getFileType().equals(type))
+                .subscribe(x -> result.add(x));
+        return result;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.cowman.turlough.packagemanagement;
+package com.cowman.turlough.packagemanagement.pojo;
 
 /**
  * Created by turlough on 13/02/16.

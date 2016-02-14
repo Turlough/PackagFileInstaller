@@ -3,7 +3,8 @@ package com.cowman.turlough.packagemanagement;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileRegister;
+import com.cowman.turlough.packagemanagement.pojo.FileType;
+import com.cowman.turlough.packagemanagement.pojo.PkgFile;
 
 import java.io.IOException;
 import java.util.HashSet;

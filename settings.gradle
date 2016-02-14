@@ -1,1 +1,1 @@
-include ':InstrumentTests', ':packagemanagement'
+include ':packagemanagement'

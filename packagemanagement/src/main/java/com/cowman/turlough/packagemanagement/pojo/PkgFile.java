@@ -1,13 +1,13 @@
-package com.cowman.turlough.packagemanagement;
+package com.cowman.turlough.packagemanagement.pojo;
 
 import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileProcessor;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,16 +18,17 @@ import lombok.Setter;
 public class PkgFile {
 
     @Getter @Setter private FileFilter filter;
-    @Getter @Setter private Set<File> files = new HashSet<>();
+    @Getter @Setter private List<File> files = new ArrayList<>();
     @Getter @Setter private Date lastModified;
     @Getter @Setter private String md5;
     @Getter @Setter private FileType fileType;
     @Getter @Setter private PkgFileProcessor processor;
 
 
-    public void loadFiles(File dir){
+    public boolean loadFiles(File dir){
         File[] list = dir.listFiles(filter);
-        files = new HashSet(Arrays.asList(list));
+        files = new ArrayList(Arrays.asList(list));
+        return files.size()>0;
     }
 
     public boolean hasFiles(){

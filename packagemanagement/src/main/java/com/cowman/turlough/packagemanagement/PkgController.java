@@ -2,12 +2,15 @@ package com.cowman.turlough.packagemanagement;
 
 import android.content.Context;
 
-import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileRegister;
+import com.cowman.turlough.packagemanagement.pojo.FileType;
+import com.cowman.turlough.packagemanagement.pojo.PkgDir;
+import com.cowman.turlough.packagemanagement.pojo.PkgFile;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import rx.Observable;
@@ -37,19 +40,21 @@ public class PkgController {
             return packages[0];
     }
 
-    public Set<File> fromDirectory(File dir, Set<FileFilter> filters){
+    public List<PkgFile> fromDirectory(File dir, FileType type){
 
-        Set<File> fileList = new HashSet<>();
+        List<PkgFile> result = new ArrayList<>();
+        List<PkgFile> subset = register.subset(type);
+        //loadFiles for all matching, filter if no files added
+        Observable
+                .from(subset)
+                .filter(x -> x.loadFiles(dir))//loadFiles returns false if no match
+                .subscribe(x -> result.add(x));
 
-        File packageDir = checkForPackages(dir);
-        if (packageDir != null){
-            for (FileFilter filter : filters)
-                Collections.addAll(fileList, packageDir.listFiles(filter));
-        }
-
-        return fileList;
+        return result;
 
     }
+
+
 
     public Set<FileFilter> filters(){
 
@@ -76,18 +81,26 @@ public class PkgController {
         return result;
     }
 
-    public Set<PkgFile> fromDirectory(File dir) {
+    /**
+     * Returns a List of PkgFile found in directory.
+     * The List contains only PkdFiles that are defined in the registry,
+     * and that have matched a file in the directory.
+     *
+     * Use this to create a List of PackageFiles that are valid and non-empty
+     * e.g. for further processing
+     *
+     * @param dir  The directory to find matches in
+     * @return The list of non-empty valid PkgFiles
+     */
+    public List<PkgFile> fromDirectory(File dir) {
 
-        Set<PkgFile> fileSet = register.getDefinitions();
-        Set<PkgFile> result = new HashSet<>();
-
-        for(PkgFile f: fileSet) {
-            //TESTING ONLY
-            boolean isHotUpdate = f.getFileType().equals(FileType.HOTUPDATE);
-            f.loadFiles(dir);
-            if(f.hasFiles())
-                result.add(f);
-        }
+        List<PkgFile> result = new ArrayList<>();
+        Set<PkgFile> subset = register.getDefinitions();
+        //loadFiles for all matching, filter if no files added
+        Observable
+                .from(subset)
+                .filter(x -> x.loadFiles(dir))//loadFiles returns false if no match
+                .subscribe(x -> result.add(x));
 
         return result;
 

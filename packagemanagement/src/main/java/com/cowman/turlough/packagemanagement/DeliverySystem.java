@@ -2,26 +2,33 @@ package com.cowman.turlough.packagemanagement;
 
 import android.content.Context;
 
+import com.cowman.turlough.packagemanagement.pojo.FileType;
+import com.cowman.turlough.packagemanagement.pojo.PkgFile;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 
 import lombok.Getter;
 
 /**
  * Created by turlough on 13/02/16.
  */
-public class DeliverySystem extends FileSystem {
+public class DeliverySystem  {
     Context context;
     @Getter
     private File defaultDir;
 
+    FileSystem system;
+
     public DeliverySystem(Context context) {
         this.context = context;
-        init(context);
-        setDir( getExtracted(), "1234");
+        system= new FileSystem();
+        system.init(context);
+        setDir( system.getExtracted(), "1234");
     }
 
     public void touchFiles(File dir, String packageId, String... filenames) throws IOException {
@@ -53,7 +60,7 @@ public class DeliverySystem extends FileSystem {
         file.createNewFile();
         pkgFile.setLastModified(new Date(file.lastModified()));
 
-        HashSet<File> fileSet = new HashSet<>();
+        List<File> fileSet = new ArrayList<>();
         fileSet.add(file);
         pkgFile.setFiles(fileSet);
 
