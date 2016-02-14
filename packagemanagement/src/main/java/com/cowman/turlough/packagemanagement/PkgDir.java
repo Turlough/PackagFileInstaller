@@ -6,9 +6,9 @@ import lombok.Setter;
 /**
  * Created by turlough on 13/02/16.
  */
-public class IncomingPackage {
+public class PkgDir {
     @Getter @Setter String packageId;
-    @Getter @Setter PackageFile[] files;
+    @Getter @Setter PkgFile[] files;
 
 
 }

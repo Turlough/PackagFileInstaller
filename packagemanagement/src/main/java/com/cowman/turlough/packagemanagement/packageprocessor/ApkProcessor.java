@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by turlough on 13/02/16.
  */
-public class ApkProcessor implements PackageFileProcessor {
+public class ApkProcessor implements PkgFileProcessor {
     private static String TAG = ApkProcessor.class.getSimpleName();
     @Override
     public void process(File file) throws ProcessingException, IOException {

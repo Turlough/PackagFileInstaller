@@ -1,6 +1,6 @@
 package com.cowman.turlough.packagemanagement;
 
-import com.cowman.turlough.packagemanagement.packageprocessor.PackageFileProcessor;
+import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileProcessor;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -15,14 +15,15 @@ import lombok.Setter;
 /**
  * Created by turlough on 13/02/16.
  */
-public class PackageFile {
+public class PkgFile {
 
-    @Getter @Setter protected FileFilter filter;
+    @Getter @Setter private FileFilter filter;
     @Getter @Setter private Set<File> files = new HashSet<>();
     @Getter @Setter private Date lastModified;
     @Getter @Setter private String md5;
     @Getter @Setter private FileType fileType;
-    @Getter @Setter private PackageFileProcessor processor;
+    @Getter @Setter private PkgFileProcessor processor;
+
 
     public void loadFiles(File dir){
         File[] list = dir.listFiles(filter);

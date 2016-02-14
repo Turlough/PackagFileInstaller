@@ -2,11 +2,10 @@ package com.cowman.turlough.packagemanagement;
 
 import android.content.Context;
 
-import com.cowman.turlough.packagemanagement.packageprocessor.PackageFileAuthority;
+import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileRegister;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,18 +15,18 @@ import rx.Observable;
 /**
  * Created by turlough on 13/02/16.
  */
-public class PackageController {
-    private static PackageController ourInstance = new PackageController();
-    private IncomingPackage incomingPackage;
+public class PkgController {
+    private static PkgController ourInstance = new PkgController();
+    private PkgDir incomingPackage;
     private Context context;
     FileSystem system = new FileSystem();
-    private PackageFileAuthority authority = new PackageFileAuthority();
+    private PkgFileRegister register = new PkgFileRegister();
 
-    public static PackageController getInstance() {
+    public static PkgController getInstance() {
         return ourInstance;
     }
 
-    private PackageController() {
+    private PkgController() {
     }
 
     public File checkForPackages(File dir){
@@ -57,7 +56,7 @@ public class PackageController {
         Set<FileFilter> result = new HashSet<>();
 
         Observable
-                .from(authority.getDefinitions())
+                .from(register.getDefinitions())
                 .map(f -> f.getFilter())
                 .subscribe(x -> result.add(x));
 
@@ -69,7 +68,7 @@ public class PackageController {
         Set<FileFilter> result = new HashSet<>();
 
         Observable
-                .from(authority.getDefinitions())
+                .from(register.getDefinitions())
                 .filter(f -> f.getFileType().equals(category))
                 .map(f -> f.getFilter())
                 .subscribe(x -> result.add(x));
@@ -77,12 +76,14 @@ public class PackageController {
         return result;
     }
 
-    public Set<PackageFile> fromDirectory(File dir) {
+    public Set<PkgFile> fromDirectory(File dir) {
 
-        Set<PackageFile> fileSet = authority.getDefinitions();
-        Set<PackageFile> result = new HashSet<>();
+        Set<PkgFile> fileSet = register.getDefinitions();
+        Set<PkgFile> result = new HashSet<>();
 
-        for(PackageFile f: fileSet) {
+        for(PkgFile f: fileSet) {
+            //TESTING ONLY
+            boolean isHotUpdate = f.getFileType().equals(FileType.HOTUPDATE);
             f.loadFiles(dir);
             if(f.hasFiles())
                 result.add(f);

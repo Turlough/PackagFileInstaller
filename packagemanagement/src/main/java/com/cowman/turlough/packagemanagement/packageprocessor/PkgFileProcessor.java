@@ -8,6 +8,6 @@ import java.io.IOException;
 /**
  * Created by turlough on 13/02/16.
  */
-public interface PackageFileProcessor {
+public interface PkgFileProcessor {
     void process(File file) throws ProcessingException, IOException;
 }

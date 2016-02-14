@@ -3,7 +3,7 @@ package com.cowman.turlough.packagemanagement;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.cowman.turlough.packagemanagement.packageprocessor.PackageFileAuthority;
+import com.cowman.turlough.packagemanagement.packageprocessor.PkgFileRegister;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +14,9 @@ import java.io.IOException;
 public class FileSystemTest extends ApplicationTestCase<Application> {
 
     FileSystem system = new FileSystem();
-    MockFileSystem helper;
-    PackageFileAuthority authority;
+    DeliverySystem helper;
+    PkgFileRegister register;
+    private File extracted;
 
 
     public FileSystemTest() {
@@ -24,7 +25,8 @@ public class FileSystemTest extends ApplicationTestCase<Application> {
 
     public void setUp(){
         system.init(getContext());
-        helper = new MockFileSystem(getContext());
+        extracted = system.getExtracted();
+        helper = new DeliverySystem(getContext());
 
 
     }
@@ -40,13 +42,13 @@ public class FileSystemTest extends ApplicationTestCase<Application> {
     public void testDirectoriesExist(){
         assertTrue("Root does not exist", system.getRoot().exists());
         assertTrue("Incoming does not exist", system.getIncoming().exists());
-        assertTrue("Extracted does not exist", system.getExtracted().exists());
+        assertTrue("Extracted does not exist", extracted.exists());
         assertTrue("Runtime does not exist", system.getRuntime().exists());
     }
 
     public void testCreatePackage() throws IOException {
-        helper.createExtractedPackage("1234", "test.svg");
-        File result = new File(system.getExtracted(), "1234");
+        helper.touchFiles(extracted, "1234", "test.svg");
+        File result = new File(extracted, "1234");
         assertTrue("Failed to create directory", result.exists());
         result = new File(result, "test.svg");
         assertTrue("Failed to create file", result.exists());

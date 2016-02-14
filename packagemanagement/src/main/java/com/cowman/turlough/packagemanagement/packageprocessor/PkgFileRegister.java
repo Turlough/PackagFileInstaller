@@ -3,8 +3,8 @@ package com.cowman.turlough.packagemanagement.packageprocessor;
 import android.util.Log;
 
 import com.cowman.turlough.packagemanagement.FileSystem;
-import com.cowman.turlough.packagemanagement.PackageFile;
 import com.cowman.turlough.packagemanagement.FileType;
+import com.cowman.turlough.packagemanagement.PkgFile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,24 +14,26 @@ import lombok.Getter;
 /**
  * Created by turlough on 13/02/16.
  */
-public class PackageFileAuthority {
+public class PkgFileRegister {
 
-    private final static String TAG = PackageFileAuthority.class.getSimpleName();
+    private final static String TAG = PkgFileRegister.class.getSimpleName();
 
     FileSystem system = new FileSystem();
-    @Getter private  Set<PackageFile> definitions = new HashSet<>();
+    @Getter private  Set<PkgFile> definitions = new HashSet<>();
+    private  Set<PkgFile> runtimeFiles = new HashSet<>();
+    private  Set<PkgFile> runtimeRecord = new HashSet<>();
 
-    @Getter private PackageFile apk;
-    @Getter private PackageFile svg;
-    @Getter private PackageFile config;
-    @Getter private PackageFile systemUpdate;
-    @Getter private PackageFile ftm;
-    @Getter private PackageFile cdset;
-    @Getter private PackageFile reader1;
-    @Getter private PackageFile hotUpdate;
+    @Getter private PkgFile apk;
+    @Getter private PkgFile svg;
+    @Getter private PkgFile config;
+    @Getter private PkgFile systemUpdate;
+    @Getter private PkgFile ftm;
+    @Getter private PkgFile cdset;
+    @Getter private PkgFile reader1;
+    @Getter private PkgFile hotUpdate;
 
 
-    public PackageFileAuthority() {
+    public PkgFileRegister() {
 
         addQuickDefinitions();
 
@@ -43,35 +45,35 @@ public class PackageFileAuthority {
 
     private void addQuickDefinitions() {
 
-        apk = new PackageFile(){{
+        apk = new PkgFile(){{
             setFileType(FileType.APK);
             setFilter((file) -> file.getName().toLowerCase().endsWith(".apk"));
             setProcessor(new ApkProcessor());
         }};
         definitions.add(apk);
 
-        config = new PackageFile(){{
+        config = new PkgFile(){{
             setFileType(FileType.CONFIG);
             setFilter(file -> file.getName().equals("config.xml"));
             setProcessor(file -> Log.d(TAG, file.getName() + " is not implemented"));
         }};
         definitions.add(config);
 
-        ftm = new PackageFile(){{
+        ftm = new PkgFile(){{
             setFileType(FileType.CONFIG);
             setFilter(file -> file.getName().equals("ftm.xml"));
             setProcessor(file -> Log.d(TAG, file.getName() + " is not implemented"));
         }};
         definitions.add(ftm);
 
-        systemUpdate = new PackageFile(){{
+        systemUpdate = new PkgFile(){{
             setFileType(FileType.SYSTEM);
             setFilter((file) -> file.getName().toLowerCase().endsWith("ota-update.zip"));
             setProcessor(file -> Log.d(TAG, file.getName() + " is not implemented"));
         }};
         definitions.add(systemUpdate);
 
-        svg = new PackageFile(){{
+        svg = new PkgFile(){{
             setFileType(FileType.SVG);
             setFilter((file) -> file.getName().toLowerCase().endsWith(".svg"));
             setProcessor((file) -> system.moveFile(file, system.getRuntime()));
@@ -80,23 +82,24 @@ public class PackageFileAuthority {
     }
 
     private void addHotUpdateDefinitions() {
-        hotUpdate = new PackageFile(){{
+        hotUpdate = new PkgFile(){{
             setFileType(FileType.HOTUPDATE);
-            setFilter((file) -> file.getName().toLowerCase().endsWith(".svg"));
+            //setFilter(file -> file.getName().startsWith("hu"));
+            setFilter(file -> file.getName().matches("hu(.*)\\.dat"));
             setProcessor(file -> Log.d(TAG, file.getName() + " is not implemented"));
         }};
         definitions.add(hotUpdate);
     }
 
     private void addCardReaderDefinitions() {
-        cdset = new PackageFile(){{
+        cdset = new PkgFile(){{
             setFileType(FileType.CARDREADER);
-            setFilter((file) -> file.getName().matches("^C-*\\.dat$"));
+            setFilter(file -> file.getName().matches("^C-*\\.dat$"));
             setProcessor(file -> Log.d(TAG, file.getName() + " is not implemented"));
         }};
         definitions.add(cdset);
 
-        reader1 = new PackageFile(){{
+        reader1 = new PkgFile(){{
             setFileType(FileType.CARDREADER);
             setFilter((file) -> file.getName().matches("^D-*\\.csv$"));
             setProcessor(file -> Log.d(TAG, file.getName() + " is not implemented"));
