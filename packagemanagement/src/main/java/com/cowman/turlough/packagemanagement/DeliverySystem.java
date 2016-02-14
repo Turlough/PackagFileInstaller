@@ -82,4 +82,9 @@ public class DeliverySystem  {
             stream.close();
         }
     }
+
+    public Observable<Boolean> getExtractionObservable(){
+
+        return null;
+    }
 }
